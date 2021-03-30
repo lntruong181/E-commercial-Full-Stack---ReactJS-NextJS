@@ -1,7 +1,40 @@
-import Head from 'next/head'
-import Link from 'next/link'
+import {useState, useContext} from 'react'
+import valid from '../utils/valid'
+import {DataContext} from '../store/GlobalState'
+import {postData} from '../utils/fetchData'
 
 const Register = () => {
+    const initialState = {name: '', sdt: '', email: '', ngaySinh: '', gioiTinh: true, password: '', cf_password: ''};
+    const [userData,setUserData] = useState(initialState)
+    const {name , sdt, email, ngaySinh, gioiTinh, password, cf_password } = userData
+
+    const [state, dispatch] = useContext(DataContext)
+    
+    const handleChangeInput = e =>{
+        const {name, value} = e.target
+        setUserData({...userData, [name]:value})
+    }
+    
+    const handleSubmit = async e =>{
+        //ko load lai trang
+        e.preventDefault()
+        const errMsg = valid(name , sdt, email, ngaySinh, gioiTinh, password, cf_password)
+        if(errMsg){
+            return dispatch({ type: 'NOTIFY', payload: {error: errMsg} })
+        }
+     
+        dispatch({ type: 'NOTIFY', payload: {loading: true} })
+        const res = await postData('auth/register', userData)
+
+        console.log(res)
+        
+        if(res.err) {
+           
+            return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
+        }
+        return dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
+    }
+
     return (
         <div className="signup">
             <div className="container">
@@ -13,41 +46,46 @@ const Register = () => {
                     </div>
                     <div className="card-body">
                         <h5 className="card-title text-center">Register</h5>
-                        <form className="form-signin">
+                        <form className="form-signin" onSubmit={handleSubmit}>
                             <div className="form-label-group">
-                                <input type="text" id="inputUserame" className="form-control" placeholder="Username" required autoFocus/>
+                                <input type="text" id="inputUserame" name="name" value={name} onChange={handleChangeInput} className="form-control" placeholder="Username"  autoFocus/>
                                 <label htmlFor="inputUserame">Username</label>
                             </div>
 
                             <div className="form-label-group">
-                                <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required/>
+                                <input type="email" id="inputEmail" name="email" value={email} onChange={handleChangeInput} className="form-control" placeholder="Email address" />
                                 <label htmlFor="inputEmail">Email address</label>
                             </div>
                             
                             <hr/>
                             <div className="form-label-group">
-                                <input type="date" id="" className="form-control" placeholder="BirthDay" required/>
-                                <label htmlFor="inputConfirmPassword">BirthDay</label>
+                                <input type="tel" id="phone" name="sdt" value={sdt} onChange={handleChangeInput} className="form-control" placeholder="Phone" />
+                                <label htmlFor="inputPhone">Phone</label>
                             </div>
+                            <div className="form-label-group">
+                                <input type="date" id="birthday" name="ngaySinh" value={ngaySinh} onChange={handleChangeInput} className="form-control" placeholder="BirthDay" />
+                                <label htmlFor="inputBirthday">BirthDay</label>
+                            </div>
+                            
                             <div className="form-label-group">
                                 <div>
                                 <label style={{float:'left'}}>Male
-                                    <input type="radio" defaultChecked="defaultChecked" name="gioiTinh" value="true"/>
+                                    <input type="radio" defaultChecked="defaultChecked" name="gioiTinh" value="true" onChange={handleChangeInput}/>
                                 </label>              
                                 <label style={{float:'right'}}>Female
-                                    <input type="radio" name="gioiTinh" value="false"/>
+                                    <input type="radio" name="gioiTinh" value="false" onChange={handleChangeInput}/>
                                 </label>   
                                 </div> 
                             </div>
 
                             <hr/>
                             <div className="form-label-group">
-                                <input type="password" id="inputPassword" className="form-control" placeholder="Password" required/>
+                                <input type="password" id="inputPassword" name="password" value={password} onChange={handleChangeInput} className="form-control" placeholder="Password" />
                                 <label htmlFor="inputPassword">Password</label>
                             </div>
                             
                             <div className="form-label-group">
-                                <input type="password" id="inputConfirmPassword" className="form-control" placeholder="Password" required/>
+                                <input type="password" id="inputConfirmPassword" name="cf_password" value={cf_password} onChange={handleChangeInput} className="form-control" placeholder="Password" />
                                 <label htmlFor="inputConfirmPassword">Confirm password</label>
                             </div>
                             
