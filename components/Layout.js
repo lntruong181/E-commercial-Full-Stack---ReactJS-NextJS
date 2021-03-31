@@ -4,7 +4,7 @@ import Notify from './Notify'
 
 function Layout({children}){
     return (
-        <div>
+        <div className="container">
             <NavBar/>
             <Notify/>
             {children}

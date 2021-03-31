@@ -36,12 +36,14 @@ const Register = () => {
            
             return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
         }
-        return dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
+        
+        dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
+        router.push('/signin')
 
     }
 
     useEffect(() => {
-        //login success redirect home
+        //Login success không register được
         if(Object.keys(auth).length !== 0) router.push('/')
        
     }, [auth])

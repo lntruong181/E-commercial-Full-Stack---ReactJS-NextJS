@@ -6,8 +6,8 @@ export const DataContext = createContext()
 
 export const DataProvider = ({children}) => {
 
-    const initialState =  { notify: {}, auth: {}}
-    const [state, dispath] = useReducer(reducers, initialState)
+    const initialState =  { notify: {}, auth: {}, cart: []}
+    const [state, dispatch] = useReducer(reducers, initialState)
 
     useEffect(() => {
         const firstLogin = localStorage.getItem('firstLogin');
@@ -15,7 +15,7 @@ export const DataProvider = ({children}) => {
             getData('auth/accessToken').then(res => {
                 if(res.err) return localStorage.removeItem('firstLogin')
 
-                dispath({
+                dispatch({
                     type: 'AUTH',
                     payload: {
                         token: res.access_token,
@@ -27,7 +27,7 @@ export const DataProvider = ({children}) => {
     }, []);
 
     return (
-        <DataContext.Provider value={[state,dispath]}>
+        <DataContext.Provider value={[state,dispatch]}>
             {children}
         </DataContext.Provider>
     )
