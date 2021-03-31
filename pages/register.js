@@ -3,6 +3,7 @@ import valid from '../utils/valid'
 import {DataContext} from '../store/GlobalState'
 import {postData} from '../utils/fetchData'
 
+
 const Register = () => {
     const initialState = {name: '', sdt: '', email: '', ngaySinh: '', gioiTinh: true, password: '', cf_password: ''};
     const [userData,setUserData] = useState(initialState)
@@ -33,6 +34,9 @@ const Register = () => {
             return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
         }
         return dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
+        
+       
+        
     }
 
     return (

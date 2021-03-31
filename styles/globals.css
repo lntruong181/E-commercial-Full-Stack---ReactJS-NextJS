@@ -15,6 +15,10 @@ a {
 }
 
 
+/* ----------- Loading ------------- */
+
+@import url("./loading.css");
+
 /* layout signin */
 
 @import url('./signin.css');

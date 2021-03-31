@@ -1,8 +1,43 @@
-import Head from 'next/head'
 import Link from 'next/link'
-
+import {useState, useContext} from 'react'
+import {DataContext} from '../store/GlobalState'
+import {postData} from '../utils/fetchData'
+import Cookie from 'js-cookie'
 
 const Signin = () => {
+
+    const initialState = { email: '',password: ''};
+    const [userData,setUserData] = useState(initialState)
+    const {email, password } = userData
+
+    const [state, dispatch] = useContext(DataContext)
+    
+    const handleChangeInput = e =>{
+        const {name, value} = e.target
+        setUserData({...userData, [name]:value})
+    }
+    
+    const handleSubmit = async e =>{
+        //ko load lai trang
+        e.preventDefault()
+        
+        const res = await postData('auth/login', userData)
+        
+        if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
+        dispatch({ type: 'NOTIFY', payload: {success: res.msg} });
+        dispatch({ type: 'AUTH', payload: {
+            toke: res.access_token,
+            user:  res.user
+        } });
+        
+        Cookie.set('refreshtoken', res.refresh_token,{
+            path:'api/auth/accessToken',
+            expires: 7
+        })
+        localStorage.setItem('firstLogin', true)
+
+    }
+
     return (
         <div className='signin'>
             <div className='body'>
@@ -14,12 +49,12 @@ const Signin = () => {
                         <h5 className="card-title text-center">Sign In</h5>
                         <form className="form-signin">
                         <div className="form-label-group">
-                            <input type="email" id="inputEmail" className="form-control" placeholder="Email address" required autoFocus/>
+                            <input type="email" id="inputEmail" name="email" value={email} onChange={handleChangeInput} className="form-control" placeholder="Email address" required autoFocus/>
                             <label htmlFor="inputEmail">Email address</label>
                         </div>
 
                         <div className="form-label-group">
-                            <input type="password" id="inputPassword" className="form-control" placeholder="Password" required/>
+                            <input type="password" id="inputPassword" name="password" value={password} onChange={handleChangeInput} className="form-control" placeholder="Password" required/>
                             <label htmlFor="inputPassword">Password</label>
                         </div>
 
