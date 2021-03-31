@@ -1,8 +1,9 @@
 import Link from 'next/link'
-import {useState, useContext} from 'react'
+import {useState, useContext, useEffect} from 'react'
 import {DataContext} from '../store/GlobalState'
 import {postData} from '../utils/fetchData'
 import Cookie from 'js-cookie'
+import {useRouter} from 'next/router'
 
 const Signin = () => {
 
@@ -11,6 +12,9 @@ const Signin = () => {
     const {email, password } = userData
 
     const [state, dispatch] = useContext(DataContext)
+    const {auth} = state
+
+    const router = useRouter()
     
     const handleChangeInput = e =>{
         const {name, value} = e.target
@@ -20,23 +24,31 @@ const Signin = () => {
     const handleSubmit = async e =>{
         //ko load lai trang
         e.preventDefault()
-        
+        dispatch({ type: 'NOTIFY', payload: {loading: true} })
+
         const res = await postData('auth/login', userData)
         
         if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
+
         dispatch({ type: 'NOTIFY', payload: {success: res.msg} });
         dispatch({ type: 'AUTH', payload: {
             toke: res.access_token,
             user:  res.user
         } });
         
+        //lưu token vào cookie
         Cookie.set('refreshtoken', res.refresh_token,{
             path:'api/auth/accessToken',
             expires: 7
         })
         localStorage.setItem('firstLogin', true)
-
     }
+
+    useEffect(() => {
+        //login success redirect home
+        if(Object.keys(auth).length !== 0) router.push('/')
+       
+    }, [auth])
 
     return (
         <div className='signin'>
@@ -47,14 +59,14 @@ const Signin = () => {
                     <div className="card card-signin my-5">
                     <div className="card-body">
                         <h5 className="card-title text-center">Sign In</h5>
-                        <form className="form-signin">
+                        <form className="form-signin" onSubmit={handleSubmit}>
                         <div className="form-label-group">
-                            <input type="email" id="inputEmail" name="email" value={email} onChange={handleChangeInput} className="form-control" placeholder="Email address" required autoFocus/>
+                            <input type="email" id="inputEmail" name="email" value={email} onChange={handleChangeInput} className="form-control" placeholder="Email address" autoFocus/>
                             <label htmlFor="inputEmail">Email address</label>
                         </div>
 
                         <div className="form-label-group">
-                            <input type="password" id="inputPassword" name="password" value={password} onChange={handleChangeInput} className="form-control" placeholder="Password" required/>
+                            <input type="password" id="inputPassword" name="password" value={password} onChange={handleChangeInput} className="form-control" placeholder="Password"/>
                             <label htmlFor="inputPassword">Password</label>
                         </div>
 

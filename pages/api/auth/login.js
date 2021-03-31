@@ -35,7 +35,7 @@ const login = async (req, res) => {
             refresh_token,
             access_token,
             user:{
-                name: user.name,
+                name: user.ten,
                 email: user.email,
                 role: account.phanQuyen,
                 avata: user.anhDaiDien
