@@ -9,7 +9,7 @@ function NavBar(){
     const router = useRouter()
 
     const [state, dispath] = useContext(DataContext)
-    const {auth} = state
+    const {auth, cart} = state
   
     const isActive = (r) => {
         if(r === router.pathname){
@@ -74,7 +74,7 @@ function NavBar(){
                                         color: 'white',
                                         fontSize: '14px'
                                     }}>
-                                        
+                                       {cart.length} 
                                     </span>
                                 </i> Cart
                             </a>
