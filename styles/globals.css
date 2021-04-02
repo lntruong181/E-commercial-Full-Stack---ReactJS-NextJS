@@ -36,6 +36,10 @@ img {
 
 @import url("./products_manager.css");
 
+/* ----------- Checkout ------------- */
+
+@import url("./checkout.css");
+
 /* layout signin */
 
 @import url('./signin.css');
