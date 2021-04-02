@@ -46,5 +46,5 @@ export const deleteItem = (data,id,type)=>{
     return ({type,payload:newData})
 }
 export const Notified = () =>{
-    return ({ type: 'NOTIFY', payload: {error: 'Product added'} }) 
+    return ({ type: 'NOTIFY', payload: {success: 'Product added'} }) 
 }
