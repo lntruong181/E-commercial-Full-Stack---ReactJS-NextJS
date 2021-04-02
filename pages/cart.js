@@ -13,7 +13,7 @@ const Cart = () => {
     const [total, setTotal] = useState(0)
     const [callback, setCallback] = useState(false)
 
-
+    //tính total
     useEffect(()=>{
         const getTotal = () => {
             const res = cart.reduce((prev, item) => {
@@ -26,6 +26,7 @@ const Cart = () => {
           getTotal()
     },[cart])
 
+    //update cart local khi db thay đổi
     useEffect(() => {
         const cartLocal = JSON.parse(localStorage.getItem('__cart_by_dev_hung'))
         if(cartLocal && cartLocal.length > 0){
@@ -49,7 +50,10 @@ const Cart = () => {
           updateCart()
         } 
       },[callback])
-    
+
+    useEffect(() => {
+      
+    },[])
 
     if(cart.length ===0 ) return <h2>No Empty!</h2>
     return (
@@ -77,7 +81,7 @@ const Cart = () => {
             <h3>Total: <span className="text-danger">${total}</span></h3>
 
             
-            <Link href={auth.user ? '#!' : '/signin'}>
+            <Link href={auth.user ? '/checkout' : '/signin'}>
               <a className="btn btn-dark my-2">Checkout</a>
             </Link>
             
