@@ -1,43 +1,56 @@
-const mongoose = require('mongoose');
 
-const productSchema = mongoose.Schema({
+import mongoose from 'mongoose'
 
-    tenSanPham: {
+const productSchema = new mongoose.Schema({
+    title: {
         type: String,
-        default: "",
+        required: true,
+        trim: true
     },
-    loaiSanPham: {
-         type: mongoose.Schema.Types.ObjectId,
-        ref: 'productCategories',
-        require: true,
-    },
-    giaTien: {
+
+    price: {
         type: Number,
-        default: "",
+        required: true,
+        trim: true   
     },
-    soLuongTonKho: {
-        type: Number,
-        default: "",
+    description: {
+        type: String,
+        required: true
     },
-    trangThai: {
+    content: {
+        type: String,
+        required: true
+    },
+    images: {
+        type: Array,
+        required: true
+    },
+    size:{
+        type: Array,
+        required: true,
+    },
+    category: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'categories',
+        required: true
+    },
+    checked: {
         type: Boolean,
-        default: "",
+        default: false
     },
-    size: {
-        type: String,
-        default: "",
+    inStock: {
+        type: Number,
+        default: 0
     },
-    hinhAnh: {
-        type: String,
-        default: 'https://res.cloudinary.com/https-next-js-with-mongo-db-vercel-app/image/upload/v1616749790/avatar_cugq40_pwkti8.png',
-    },
-    moTa: {
-        type: String,
-        default: "",
+    sold: {
+        type: Number,
+        default: 0
+
     }
 }, {
     timestamps: true
 })
 
-let Dataset = mongoose.models.product || mongoose.model('product', productSchema);
+let Dataset = mongoose.models.product || mongoose.model('product', productSchema)
 export default Dataset
+

@@ -13,7 +13,6 @@ export default async (req, res) => {
         if(!rf_token) return res.status(400).json({error: 'Please login now'})
 
         const result  = jwt .verify(rf_token, process.env.REFRESH_TOKEN_SECRET)
-        console.log(result)
         if(!result) return res.status(400).json({error: 'You token is incorrect or has exprired'});
 
         const user = await Users.findById(result.id)
