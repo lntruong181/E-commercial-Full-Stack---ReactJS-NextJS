@@ -2,12 +2,16 @@ import Link from 'next/link'
 import {useContext, useState} from 'react'
 import {DataContext} from '../../store/GlobalState'
 import {addToCart} from '../../store/Actions'
+import {Notified} from '../../store/Actions'
 
 const ProductItem = ({product}) => {
 
     const [state, dispatch] = useContext(DataContext)
     const {cart} = state
-
+    const handleSubmit = () => {
+        dispatch(Notified())
+        dispatch(addToCart(product, cart))
+    }
     const userLink = () => {
         return(
             <>
@@ -18,7 +22,7 @@ const ProductItem = ({product}) => {
                 <button className="btn btn-success"
                 style={{marginLeft: '5px', flex: 1}}
                 disabled={product.inStock === 0 ? true : false} 
-                onClick={() => dispatch(addToCart(product, cart))} >
+                onClick={handleSubmit} >
                     Buy
                 </button>
             </>
@@ -26,6 +30,7 @@ const ProductItem = ({product}) => {
     }
     
     return (
+        
         <div className="card" style={{ width: '18rem' }}>
         
         <img className="card-img-top" src={product.images[0].url} alt={product.images[0].url} />

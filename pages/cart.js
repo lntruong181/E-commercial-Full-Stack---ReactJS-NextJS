@@ -57,7 +57,7 @@ const Cart = () => {
 
     if(cart.length ===0 ) return <h2>No Empty!</h2>
     return (
-        <div className="mx-auto">
+        <div style={{marginLeft:'10%', marginRight:'10%'}}>
         <Head>
           <title>Cart Page</title>
         </Head>

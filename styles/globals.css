@@ -20,6 +20,14 @@ img {
 }
 
 
+/* ----------- Navbar ------------- */
+
+@import url("./navbar.css");
+
+/* ----------- Footer ------------- */
+
+@import url("./footer.css");
+
 /* ----------- Loading ------------- */
 
 @import url("./loading.css");

@@ -1,40 +1,36 @@
-import {getData} from '../utils/fetchData'
-import {useState} from 'react'
+import Link from 'next/link'
 
-import Head from 'next/head'
-import ProductItem from '../components/product/ProductItem'
+const store = () =>{
+return (
+    <div className="">
+      <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+          <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
+          <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img class="d-block w-100" src="./img/logo.jpg" alt="First slide" />
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="./img/logo4.jpg" alt="Second slide" />
+          </div>
+          <div class="carousel-item">
+            <img class="d-block w-100" src="./img/logo.jpg" alt="Third slide" />
+          </div>
+        </div>
+        <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="sr-only">Next</span>
+        </a>
+      </div>
 
 
-const Home = (props) => {
-  const [products, setProducts] = useState(props.products)
-
-
-  return (
-    <div className="products">
-      <Head>
-        <title>Home Page</title>
-      </Head>
-
-      {
-        products.length === 0
-        ? <h2>No Product</h2>
-        :products.map(product =>(
-          <ProductItem key={product._id} product={product}/>
-          
-        ))
-      }
-    </div>
-  )
-}
-
-
-export async function getServerSideProps() {
-  const res = await getData('product')
-  return {
-    props: {
-      products: res.products,
-      result: res.result
-    }, // will be passed to the page component as props
-  }
-}
-export default Home
+</div>
+)}
+export default store

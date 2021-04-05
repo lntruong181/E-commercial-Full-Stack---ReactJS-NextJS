@@ -1,5 +1,15 @@
+import {DataContext} from '../store/GlobalState'
+import {useContext } from 'react'
+
 
 const Checkout = () => {
+  const [state, dispatch] = useContext(DataContext)
+  const {auth} = state
+
+  const users = auth.user
+ 
+  
+  
     return (
         <div className="checkout">
         <div className="row">
@@ -10,8 +20,9 @@ const Checkout = () => {
               <div className="row">
                 <div className="col-50">
                   <h3>Billing Address</h3>
-                  <label htmlFor="fname"><i className="fa fa-user"></i> Full Name</label>
-                  <input type="text" id="fname" name="firstname" placeholder="John M. Doe"/>
+                  <label htmlFor="fname"><i className="fa fa-user"></i> Full Name  {users.name}</label>
+                
+                  <input type="text" id="fname" name="firstname" placeholder="Name" />
                   <label htmlFor="email"><i className="fa fa-envelope"></i> Email</label>
                   <input type="text" id="email" name="email" placeholder="john@example.com"/>
                   <label htmlFor="adr"><i className="fa fa-address-card-o"></i> Address</label>
