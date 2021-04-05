@@ -6,26 +6,26 @@ import Cookie from 'js-cookie'
 
 function NavBar(){
 
-const router = useRouter()
+    const router = useRouter()
 
-const [state, dispath] = useContext(DataContext)
-const {auth, cart} = state
+    const [state, dispath] = useContext(DataContext)
+    const {auth, cart} = state
 
-const isActive = (r) => {
-if(r === router.pathname){
-return " active"
-}else{
-return ""
-}
-}
+    const isActive = (r) => {
+        if(r === router.pathname){
+            return " active"
+        }else{
+            return ""
+    }
+    }
 //Xử lý logout
-const handleLogout = () => {
-Cookie.remove('refreshtoken', {path: 'api/auth/accessToken'})
-localStorage.removeItem('firstLogin')
-//refresh auth
-dispath({type: 'AUTH', payload: {}})
-dispath({type: 'NOTIFY', payload: {success: 'Logged out'}})
-}
+    const handleLogout = () => {
+        Cookie.remove('refreshtoken', {path: 'api/auth/accessToken'})
+        localStorage.removeItem('firstLogin')
+        //refresh auth
+        dispath({type: 'AUTH', payload: {}})
+        dispath({type: 'NOTIFY', payload: {success: 'Logged out'}})
+    }
 
 const loggedRouter = () => {
 return (
@@ -61,8 +61,7 @@ return (
                     <div className="col-12">
                         <nav className="navbar navbar-expand-md navbar-light">
 
-                            <a className="navbar-brand" href="/"><img src="https://assets.codepen.io/1462889/fcy.png"
-                                    alt="" /></a>
+                            <a className="navbar-brand" href="/"><img src="/img/logostore1.png" alt="" /></a>
 
                             <button className="navbar-toggler" type="button" data-toggle="collapse"
                                 data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"

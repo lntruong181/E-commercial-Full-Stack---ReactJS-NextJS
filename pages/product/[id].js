@@ -31,7 +31,7 @@ const DetailProduct = (props) =>{
 
 
     return (
-        <div className="row detail_page">
+        <div className="row detail_page" style={{marginLeft:'10%', marginRight:'10%', marginBottom: '20px'}}>
             <Head>
                 <title>Detail Product</title>
             </Head>
@@ -74,8 +74,9 @@ const DetailProduct = (props) =>{
                 onClick={() => dispatch(addToCart(product, cart))} >
                     Buy
                 </button>
-
+                  
             </div>
+        
         </div>
             
        
