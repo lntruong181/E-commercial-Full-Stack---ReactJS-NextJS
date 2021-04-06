@@ -1,6 +1,5 @@
 import {getData} from '../utils/fetchData'
 import {useState} from 'react'
-
 import Head from 'next/head'
 import ProductItem from '../components/product/ProductItem'
 

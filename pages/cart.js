@@ -57,7 +57,7 @@ const Cart = () => {
 
     if(cart.length ===0 ) return(
         <div className="container-fluid mt-100">
-          <div classNameName="row">
+          <div className="row">
               <div className="col-md-12">
                   <div className="card">
                       
@@ -73,7 +73,7 @@ const Cart = () => {
         </div>
     );
     return (
-        <div style={{marginLeft:'10%', marginRight:'10%'}}>
+        <div style={{marginLeft:'10%', marginRight:'10%', marginTop: '30px'}}>
         <Head>
           <title>Cart Page</title>
         </Head>
