@@ -4,6 +4,7 @@ import { DataContext } from '../store/GlobalState'
 import Link from 'next/link'
 import valid from '../utils/valid'
 import { getData, patchData } from '../utils/fetchData'
+import {ImageUpload} from '../utils/ImageUpload'
 var dateFormat = require('dateformat');
 
 const getUser = async (email) => {
@@ -20,6 +21,10 @@ const Profile = () => {
 
     const [state, dispatch] = useContext(DataContext)
     const { auth , notify} = state
+
+    const [dataUser, setDataUser] = useState({})
+    const [account, setAccount] = useState({})
+    const [address, setAddress] = useState({})
       
     useEffect(() => {
         if(auth.user){
@@ -27,6 +32,8 @@ const Profile = () => {
                 const res = await getUser(auth.user.email)
                 const users = res.users
                 const accounts = res.account
+                setAccount({accounts})
+                setDataUser({users})
                 setData({...data, name: users.ten, sdt: users.sdt, gioiTinh: users.gioiTinh, ngaySinh: users.ngaySinh, 
                     ngayTao: users.ngayTao, role: accounts.phanQuyen, trangThai: accounts.trangThai})
                 
@@ -50,6 +57,7 @@ const Profile = () => {
              if(errMsg) return dispatch({ type: 'NOTIFY', payload: {error: errMsg} })
              updatePassword()
          }
+         if(name!== dataUser.ten || avata) updateInfor()
 
      }
      const updatePassword = () => {
@@ -59,6 +67,30 @@ const Profile = () => {
             if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
             return dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
         })
+     }
+     const changeAvatar = (e) => {
+         const file = e.target.files[0]
+         if(!file) return dispatch({ type: 'NOTIFY', payload: {error: 'Không có ảnh được chọn.'} })
+         if(file.size > 1024 * 1024) return dispatch({ type: 'NOTIFY', payload: {error: 'File lớn hơn 1mb.'} })
+         if(file.type !== "image/jpeg" && file.type !== "image/png") 
+            return dispatch({ type: 'NOTIFY', payload: {error: 'File không đúng định dạng.'} })
+         setData({...data, avata: file})
+     }
+    const updateInfor = async() => {
+         let media
+         dispatch({type:'NOTIFY', payload: {loading:true}})
+         if(avata) media = await ImageUpload([avata])
+         patchData('user', {name, avata: avata? media[0].url : auth.user.avata}, auth.token).then(res => {
+             if(!res) return dispatch({type: 'NOTIFY', payload: {error: res.err}})
+             dispatch({
+                 type: 'AUTH',
+                 payload: {
+                     token: auth.token,
+                     user: res.user
+                 }
+             })
+             return dispatch({type: 'NOTIFY', payload: {success: res.msg}})
+         })
      }
     if(!auth.user) return null
     
@@ -76,11 +108,12 @@ const Profile = () => {
                     </h3>
 
                     <div className="avatar">
-                        <img src={auth.user.avata} alt={auth.user.avata} />
+                        <img src={avata ? URL.createObjectURL(avata) : auth.user.avata} 
+                        alt="avata"/>
                         <span>
                             <i className="fas fa-camera"></i>
                             <p>Change</p>
-                            <input type="file" name="file" id="file_up"
+                            <input type="file" name="file" id="file_up" onChange={changeAvatar}
                             accept="image/*" />
                         </span>
                     </div>
