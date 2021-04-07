@@ -129,7 +129,7 @@ textarea {
     font: inherit;
     margin: 0;
     padding: 0;
-    -webkit-appearance: none;
+    /* -webkit-appearance: none; */
     -webkit-font-smoothing: inherit;
     border: none;
     background: transparent;
