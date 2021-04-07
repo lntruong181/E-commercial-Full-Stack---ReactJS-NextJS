@@ -3,40 +3,67 @@ import { useState, useContext, setState, useEffect } from 'react'
 import { DataContext } from '../store/GlobalState'
 import Link from 'next/link'
 import valid from '../utils/valid'
-import { getData } from '../utils/fetchData'
+import { getData, patchData } from '../utils/fetchData'
 var dateFormat = require('dateformat');
 
 const getUser = async (email) => {
-   
-    
     const res = await getData(`user/${email}`)
     if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
     return res.users
 }
 
 const Profile = () => {
-    const [state, dispatch] = useContext(DataContext)
-    const { auth } = state 
+    const initialState = {avata: '', name: '', sdt: '', ngayTao: Date.now(), ngaySinh: Date.now() ,  gioiTinh: true, role: 'user',trangThai: true, password: '', cf_password: ''};
+    const [data, setData] = useState(initialState)
+    const {avata, name, sdt, gioiTinh, role, ngayTao, ngaySinh, trangThai, password, cf_password} = data
 
-    const [dataUser, setDataUser] = useState({})
-    
+
+    const [state, dispatch] = useContext(DataContext)
+    const { auth , notify} = state
+      
     useEffect(() => {
         if(auth.user){
             const getDataUser = async() => {
-                const users = await getUser(auth.user.email)
-                setDataUser(users)
+                const res = await getUser(auth.user.email)
+                const users = res.users
+                const accounts = res.account
+                setData({...data, name: users.ten, sdt: users.sdt, gioiTinh: users.gioiTinh, ngaySinh: users.ngaySinh, 
+                    ngayTao: users.ngayTao, role: accounts.phanQuyen, trangThai: accounts.trangThai})
+                
            }
            getDataUser()
+           
         }
      }, [auth.user]);
-     const handleChangeInput = () => {
+     
+    
+     const handleChangeInput = (e) => {
+        const {name, value} = e.target
+        setData({...data, [name]: value})
+        dispatch({type: 'NOTIFY', payload: {} })
 
      }
-    if(!auth.user) return null;
-    
+     const handleUpdateProfile = e => {
+        e.preventDefault()
+         if(password){
+             const errMsg = valid(name , sdt, auth.user.email, ngaySinh, gioiTinh, password, cf_password) 
+             if(errMsg) return dispatch({ type: 'NOTIFY', payload: {error: errMsg} })
+             updatePassword()
+         }
+
+     }
+     const updatePassword = () => {
+        dispatch({ type: 'NOTIFY', payload: {loading: true} })
+        patchData('user/resetPassword', {password}, auth.token)
+        .then(res => {
+            if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
+            return dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
+        })
+     }
+    if(!auth.user) return null
     
      
-     return( 
+    return( 
         <div className="profile_page" style={{marginLeft:'10%', marginRight:'10%', marginTop: '30px'}}>
             <Head>
                 <title>Profile</title>
@@ -57,50 +84,70 @@ const Profile = () => {
                             accept="image/*" />
                         </span>
                     </div>
+                   
                     <div className="form-label-group">
-                                <input type="text" id="inputUserame" name="name" defaultValue={dataUser.ten}  onChange={handleChangeInput} className="form-control" placeholder="Username" />
+                                <input type="text" id="inputUsername" name="name" value={name}  onChange={handleChangeInput} className="form-control" placeholder="Username" />
                                 <label htmlFor="inputUserame">Username</label>
                             </div>
 
                             <div className="form-label-group">
-                                <input type="email" id="inputEmail" name="email" defaultValue={dataUser.email} onChange={handleChangeInput} className="form-control" placeholder="Email address" />
+                                <input type="email" id="inputEmail" name="email" readOnly defaultValue={auth.user.email} onChange={handleChangeInput} className="form-control" placeholder="Email address" />
                                 <label htmlFor="inputEmail">Email address</label>
                             </div>
                             
                             <hr/>
                             <div className="form-label-group">
-                                <input type="tel" id="phone" name="sdt" defaultValue={dataUser.sdt} onChange={handleChangeInput} className="form-control" placeholder="Phone" />
+                                <input type="tel" id="phone" name="sdt" value={sdt} onChange={handleChangeInput} className="form-control" placeholder="Phone" />
                                 <label htmlFor="inputPhone">Phone</label>
                             </div>
-                            <div className="form-label-group">
-                                
-                                <input type="text" id="birthday" name="ngaySinh" defaultValue={dateFormat(dataUser.ngaySinh,"dd-mm-yyyy")} onChange={handleChangeInput} className="form-control" placeholder="BirthDay" />
-                                <label htmlFor="inputBirthday">BirthDay</label>
-                            </div>
                             
+                            <hr/>
                             <div className="form-label-group">
                                 <div>
                                 <label style={{float:'left'}}>Male
-                                    <input type="radio" defaultChecked="defaultChecked" name="gioiTinh" value="true" onChange={handleChangeInput}/>
+                                    <input type="radio" defaultChecked={gioiTinh? 'checked' : ''} name="gioiTinh" value="true" onChange={handleChangeInput}/>
                                 </label>              
                                 <label style={{float:'right'}}>Female
-                                    <input type="radio" name="gioiTinh" value="false" onChange={handleChangeInput}/>
+                                    <input type="radio" defaultChecked={gioiTinh? '' : 'checked'} name="gioiTinh" value="false" onChange={handleChangeInput}/>
                                 </label>   
                                 </div> 
                             </div>
 
-                            <hr/>
-                            <div className="form-label-group">
-                                <input type="password" id="inputPassword" name="password"  onChange={handleChangeInput} className="form-control" placeholder="Password" />
-                                <label htmlFor="inputPassword">Password</label>
+                           <br/>
+                           <hr/>
+                           <div className="form-label-group">
+                                
+                                <input type="text" id="birthday" name="ngaySinh" value={dateFormat(ngaySinh,"dd-mm-yyyy")} readOnly onChange={handleChangeInput} className="form-control" placeholder="BirthDay" />
+                                <label htmlFor="inputBirthday">BirthDay</label>
+                            </div>
+                           <div className="form-label-group">
+                                <input type="text" id="inputDateCreateUser" value={dateFormat(ngayTao,"dd-mm-yyyy")} readOnly name="password"  onChange={handleChangeInput} className="form-control" placeholder="Day Create User" />
+                                <label htmlFor="inputPassword">Day create user</label>
+                            </div>
+                            
+                           <hr/>
+                           <div className="form-label-group">
+                                <input type="text" id="inputRole" name="role" value={role} readOnly={auth.user.role === 'user'? 'readOnly': ''} onChange={handleChangeInput} className="form-control" placeholder="Role" />
+                                <label htmlFor="inputRole">Role</label>
                             </div>
                             
                             <div className="form-label-group">
-                                <input type="password" id="inputConfirmPassword" name="cf_password" onChange={handleChangeInput} className="form-control" placeholder="Password" />
-                                <label htmlFor="inputConfirmPassword">Confirm password</label>
+                                <input type="text" id="inpuStatus" value={trangThai? 'Activated' : 'Un Activated'} readOnly={auth.user.role === 'user'? 'readOnly': ''} name="status" onChange={handleChangeInput} className="form-control" placeholder="Status" />
+                                <label htmlFor="inpuStatus">Status</label>
+                            </div>
+                           <hr/>
+                            
+                            <div className="form-label-group">
+                                <input type="password" id="inputPassword" name="password" value={password} onChange={handleChangeInput} className="form-control" placeholder="Password" />
+                                <label htmlFor="inputPassword">New Password</label>
                             </div>
                             
-                    <button className="btn btn-info">
+                            <div className="form-label-group">
+                                <input type="password" id="inputConfirmPassword" value={cf_password} name="cf_password" onChange={handleChangeInput} className="form-control" placeholder="Password" />
+                                <label htmlFor="inputConfirmPassword">Confirm new password</label>
+                            </div>
+                          
+                    <button className="btn btn-info" disabled={notify.loading} onClick={handleUpdateProfile}>
                         Update
                     </button>
                 </div>
