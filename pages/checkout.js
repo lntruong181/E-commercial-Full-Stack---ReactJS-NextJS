@@ -3,6 +3,9 @@ import {getData} from '../utils/fetchData'
 import { useState, useContext, useEffect } from 'react'
 import { DataContext } from '../store/GlobalState'
 import { postData} from '../utils/fetchData'
+import PaypalBtn from './paypalBtn'
+import Link from 'next/link'
+
 
 
 
@@ -11,6 +14,8 @@ const Checkout = () => {
     const initialState  = {name: '', email:'', sdt: '', diachi: '', phuongxa: '' , quanhuyen: '', tinhtp: ''}
     const [data, setData] = useState(initialState)
     const {name, email, sdt, diachi, phuongxa, quanhuyen, tinhtp} = data
+
+    const [payment, setPayment] = useState(false)
 
     const [state, dispatch] = useContext(DataContext)
     const {auth, cart} = state
@@ -42,14 +47,17 @@ const Checkout = () => {
         dispatch({type: 'NOTIFY', payload: {} })
     }
     const handleSumitOrder = (e) => {
-        postData('order', {name, email, sdt, diachi, phuongxa, quanhuyen, tinhtp, total, cart}, auth.token)
-            .then(res => {
-            if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
+        if(!name || !email || !sdt || !diachi || !phuongxa || !quanhuyen || !tinhtp)
+        return dispatch({type: 'NOTIFY', payload: {error: 'Vui lòng nhập đủ thông tin. '}})
+        setPayment(true)
+        // postData('order', {name, email, sdt, diachi, phuongxa, quanhuyen, tinhtp, total, cart}, auth.token)
+        //     .then(res => {
+        //     if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
 
-           console.log(res)
-            dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
+        //    console.log(res)
+        //     dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
          
-    })
+        // })
     }
 
     if(!auth.user) return null
@@ -348,7 +356,14 @@ const Checkout = () => {
                                                                     <span className="radio-label-primary">Thanh toán khi giao hàng (COD)</span>
                                                                 </label>
                                                 </div>
-
+                                                <div className="radio-wrapper content-box-row">
+                                                    <label className="radio-label" defaultValue="payment_method_id_941686">
+                                                                    <div className="radio-input">
+                                                                        <input id="payment_method_id_941686" className="input-radio" name="payment_method_id" type="radio" defaultValue="941686" defaultChecked/>
+                                                                    </div>
+                                                                    <span className="radio-label-primary">PayPal</span>
+                                                                </label>
+                                                </div>
 
 
                                             </div>
@@ -362,14 +377,27 @@ const Checkout = () => {
 
                         </div>
                         <div className="step-footer">
+                                {
+                                    payment
+                                    ? <PaypalBtn
+                                        total={total}
+                                        name={name}
+                                        email={email}
+                                        sdt={sdt}
+                                        diachi={diachi}
+                                        phuongxa={phuongxa}
+                                        quanhuyen={quanhuyen}
+                                        tinhtp={tinhtp}
+                                        state={state}
+                                        dispatch={dispatch}
 
-                            
-                                <input name="utf8" type="hidden" defaultValue="✓"/>
-                                <button type="submit" className="step-footer-continue-btn btn" onClick={handleSumitOrder}>
+
+                                    />
+                                    :  <button type="submit" className="step-footer-continue-btn btn" onClick={handleSumitOrder}>
                                             <span className="btn-content">Hoàn tất đơn hàng</span>
                                             <i className="btn-spinner icon icon-button-spinner"></i>
                                         </button>
-                            
+                                }                            
                             <a className="step-footer-previous-link" href="/cart">
                                 <svg className="previous-link-icon icon-chevron icon" xmlns="http://www.w3.org/2000/svg" width="6.7" height="11.3" viewBox="0 0 6.7 11.3"><path d="M6.7 1.1l-1-1.1-4.6 4.6-1.1 1.1 1.1 1 4.6 4.6 1-1-4.6-4.6z"></path></svg> Giỏ
                                 hàng

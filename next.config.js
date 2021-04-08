@@ -6,6 +6,9 @@ module.exports = {
         "REFRESH_TOKEN_SECRET": '9."nDn95_?!Z3B.`!$_CdDEh#pSg7RSFvGe^&FyU9UM=>Y^:E7+!sf?:z6>_.dMDY4Sx/*5@7":u6CA)',
         "CLOUD_UPDATE_PRESET": "aothun_store",
         "CLOUD_NAME": "nguyenhungdev",
-        "CLOUD_API": "https://api.cloudinary.com/v1_1/nguyenhungdev/image/upload"
+        "CLOUD_API": "https://api.cloudinary.com/v1_1/nguyenhungdev/image/upload",
+        "PAYPAL_CLIENT_ID": "ARZnwrB3wNBnmo6ZcY2YAtBqlRCmAEG-SHe4sOZ87LAjSO8WSmztANgdAC0MO0k7LuNP0hUbxaSJsJcU"
+        
+        
     }
 }
