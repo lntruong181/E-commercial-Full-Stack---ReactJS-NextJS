@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-
-var dateFormat = require('dateformat');
+import moment from 'moment';
 
 const userSchema = new mongoose.Schema({
     ten: {
@@ -27,15 +26,15 @@ const userSchema = new mongoose.Schema({
     },
     anhDaiDien: {
         type: String,
-        default: 'https://res.cloudinary.com/https-next-js-with-mongo-db-vercel-app/image/upload/v1616749790/avatar_cugq40_pwkti8.png',
+        default: 'https://res.cloudinary.com/nguyenhungdev/image/upload/v1617853007/aothun_media/avatar_cugq40_xstasu.png',
     },
     ngaySinh: {
         type: Date,
-        default: dateFormat(Date.now(), "yyyy-mm-dd")
+        default: moment('1999-01-01').format('YYYY-MM-DD')
     },
     ngayTao: {
         type: Date,
-        default: dateFormat(Date.now(), "yyyy-mm-dd")
+        default: moment(Date.now()).format('YYYY-MM-DD')
     },
     account: {
         type: mongoose.Schema.Types.ObjectId,
