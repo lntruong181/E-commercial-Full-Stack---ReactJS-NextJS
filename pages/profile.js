@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useState, useContext, setState, useEffect } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { DataContext } from '../store/GlobalState'
 import Link from 'next/link'
 import valid from '../utils/valid'

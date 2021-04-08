@@ -2,12 +2,16 @@
 import {getData} from '../utils/fetchData'
 import { useState, useContext, useEffect } from 'react'
 import { DataContext } from '../store/GlobalState'
+import { postData} from '../utils/fetchData'
 
 
 
 const Checkout = () => {
 
-    const initialState  = {name: '', email:''}
+    const initialState  = {name: '', email:'', sdt: '', diachi: '', phuongxa: '' , quanhuyen: '', tinhtp: ''}
+    const [data, setData] = useState(initialState)
+    const {name, email, sdt, diachi, phuongxa, quanhuyen, tinhtp} = data
+
     const [state, dispatch] = useContext(DataContext)
     const {auth, cart} = state
 
@@ -25,6 +29,28 @@ const Checkout = () => {
           getTotal()
     },[cart])
 
+    useEffect(()=>{
+       if(auth.user){
+        setData({...data, name: auth.user.name, email: auth.user.email, sdt: auth.user.phone, diachi: auth.user.address.diaChi, 
+            phuongxa: auth.user.address.phuongXa, quanhuyen: auth.user.address.quanHuyen, tinhtp: auth.user.address.tinhThanhPho})
+       }
+    },[auth.user])
+
+    const handleChangeInput = (e) => {
+        const {name, value} = e.target
+        setData({...data, [name]: value})
+        dispatch({type: 'NOTIFY', payload: {} })
+    }
+    const handleSumitOrder = (e) => {
+        postData('order', {name, email, sdt, diachi, phuongxa, quanhuyen, tinhtp, total, cart}, auth.token)
+            .then(res => {
+            if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
+
+           console.log(res)
+            dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
+         
+    })
+    }
 
     if(!auth.user) return null
     
@@ -64,11 +90,12 @@ const Checkout = () => {
                                     <tbody>
                                         {
                                             cart.map(item => (
-                                                <tr className="product" data-product-id="1030328923" data-variant-id="1066419252">
+                                                <tr className="product" key={item._id}>
                                                 <td className="product-image">
                                                     <div className="product-thumbnail">
                                                         <div className="product-thumbnail-wrapper">
-                                                            <img className="product-thumbnail-image" alt="SAIGON SPIRIT WASH TEE" src={item.images[0].url} alt={item.images[0].url}/>
+                                                            
+                                                            <img className="product-thumbnail-image" alt="" src={item.images[0].url} alt={item.images[0].url}/>
                                                         </div>
                                                         <span className="product-thumbnail-quantity">{item.quantity}</span>
                                                     </div>
@@ -88,8 +115,7 @@ const Checkout = () => {
                                             </tr>
                                             ))
                                         }
-                                        
-
+                        
                                     </tbody>
                                 </table>
                             </div>
@@ -194,19 +220,20 @@ const Checkout = () => {
                                 <div className="section-content section-customer-information no-mb">
 
 
-                                    <p className="section-content-text">
-                                        Bạn đã có tài khoản?
-                                        <a href="/account/login?urlredirect=%2Fcheckouts%2F9bb14289e81f499cb931125acfc0e1b2%3Fstep%3D1">Đăng nhập</a>
-                                    </p>
-
-
-                                    <div className="fieldset">
-
-
-                                        <div className="field field-required  ">
+                                <div className="logged-in-customer-information">
+                                
+                                    <a className="nav-link dropdown-toggle" href="/profile" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <img src={auth.user.avata} alt={auth.user.avata} style={{
+                                                            borderRadius: '20%', width: '50px', height: '50px',
+                                                            transform: 'translateY(-3px)', marginRight: '3px'
+                                                        }} /> {auth.user.name} {auth.user.email}
+                                    </a>
+                                </div>
+								<div className="fieldset">
+                                    <div className="field field-required  ">
                                             <div className="field-input-wrapper">
                                                 <label className="field-label" htmlFor="billing_address_full_name">Họ và tên</label>
-                                                <input placeholder="Họ và tên" autoCapitalize="off" spellCheck="false" className="field-input" size="30" type="text" id="billing_address_full_name" name="billing_address[full_name]" defaultValue={auth.user.name} />
+                                                <input placeholder="Họ và tên" autoCapitalize="off" spellCheck="false" className="field-input" size="30" type="text" id="billing_address_full_name" name="name" value={name} onChange={handleChangeInput}/>
                                             </div>
 
                                         </div>
@@ -216,7 +243,7 @@ const Checkout = () => {
                                         <div className="field field-required field-two-thirds  ">
                                             <div className="field-input-wrapper">
                                                 <label className="field-label" htmlFor="checkout_user_email">Email</label>
-                                                <input placeholder="Email" autoCapitalize="off" spellCheck="false" className="field-input" size="30" type="email" id="checkout_user_email" name="checkout_user[email]" defaultValue={auth.user.email}/>
+                                                <input placeholder="Email" autoCapitalize="off" spellCheck="false" className="field-input" size="30" type="email" id="checkout_user_email" name="email" value={email} onChange={handleChangeInput}/>
                                             </div>
 
                                         </div>
@@ -226,7 +253,7 @@ const Checkout = () => {
                                         <div className="field field-required field-third  ">
                                             <div className="field-input-wrapper">
                                                 <label className="field-label" htmlFor="billing_address_phone">Số điện thoại</label>
-                                                <input placeholder="Số điện thoại" autoCapitalize="off" spellCheck="false" className="field-input" size="30" maxLength="15" type="tel" id="billing_address_phone" name="billing_address[phone]" defaultValue={auth.user.phone}/>
+                                                <input placeholder="Số điện thoại" autoCapitalize="off" spellCheck="false" className="field-input" size="30" maxLength="15" type="tel" id="billing_address_phone" name="sdt" value={sdt} onChange={handleChangeInput}/>
                                             </div>
 
                                         </div>
@@ -235,7 +262,7 @@ const Checkout = () => {
                                         <div className="field field-required  ">
                                             <div className="field-input-wrapper">
                                                 <label className="field-label" htmlFor="billing_address_address1">Địa chỉ</label>
-                                                <input placeholder="Địa chỉ" autoCapitalize="off" spellCheck="false" className="field-input" size="30" type="text" id="billing_address_address1" name="billing_address[address1]" defaultValue={auth.user.address.diaChi}/>
+                                                <input placeholder="Địa chỉ" autoCapitalize="off" spellCheck="false" className="field-input" size="30" type="text" id="billing_address_address1" name="diachi" value={diachi} onChange={handleChangeInput}/>
                                             </div>
 
                                         </div>
@@ -257,7 +284,7 @@ const Checkout = () => {
                                             <div className="field field-show-floating-label field-required field-third ">
                                                 <div className="field-input-wrapper">
                                                     <label className="field-label" htmlFor="customer_shipping_province"> Tỉnh / thành  </label>
-                                                    <input type='text' defaultValue={auth.user.address.tinhThanhPho} className="field-input" id="customer_shipping_province" name="customer_shipping_province" />
+                                                    <input type='text' value={tinhtp} className="field-input" id="customer_shipping_province" name="tinhtp" onChange={handleChangeInput} />
                                                                 
                                                 </div>
 
@@ -267,7 +294,7 @@ const Checkout = () => {
                                             <div className="field field-show-floating-label field-required field-third ">
                                                 <div className="field-input-wrapper">
                                                     <label className="field-label" htmlFor="customer_shipping_district">Quận / huyện</label>
-                                                    <input type='text' defaultValue={auth.user.address.quanHuyen} className="field-input" id="customer_shipping_district" name="customer_shipping_district"/>
+                                                    <input type='text' value={quanhuyen} className="field-input" id="customer_shipping_district" name="quanhuyen" onChange={handleChangeInput}/>
                                                 </div>
 
                                             </div>
@@ -275,7 +302,7 @@ const Checkout = () => {
                                             <div className="field field-show-floating-label field-required  field-third  ">
                                                 <div className="field-input-wrapper">
                                                     <label className="field-label" htmlFor="customer_shipping_ward">Phường / xã</label>
-                                                    <input type='text' defaultValue={auth.user.address.phuongXa} className="field-input" id="customer_shipping_ward" name="customer_shipping_ward"/>
+                                                    <input type='text' value={phuongxa} className="field-input" id="customer_shipping_ward" name="phuongxa" onChange={handleChangeInput}/>
                                                 </div>
 
                                             </div>
@@ -336,13 +363,13 @@ const Checkout = () => {
                         </div>
                         <div className="step-footer">
 
-                            <form id="form_next_step" acceptCharset="UTF-8" method="post">
+                            
                                 <input name="utf8" type="hidden" defaultValue="✓"/>
-                                <button type="submit" className="step-footer-continue-btn btn">
+                                <button type="submit" className="step-footer-continue-btn btn" onClick={handleSumitOrder}>
                                             <span className="btn-content">Hoàn tất đơn hàng</span>
                                             <i className="btn-spinner icon icon-button-spinner"></i>
                                         </button>
-                            </form>
+                            
                             <a className="step-footer-previous-link" href="/cart">
                                 <svg className="previous-link-icon icon-chevron icon" xmlns="http://www.w3.org/2000/svg" width="6.7" height="11.3" viewBox="0 0 6.7 11.3"><path d="M6.7 1.1l-1-1.1-4.6 4.6-1.1 1.1 1.1 1 4.6 4.6 1-1-4.6-4.6z"></path></svg> Giỏ
                                 hàng

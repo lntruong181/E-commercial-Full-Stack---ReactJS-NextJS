@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
 import Users from '../models/userModel'
+import Accounts from '../models/accountModel'
 
 
 const auth = async (req, res) => {
@@ -10,8 +11,9 @@ const auth = async (req, res) => {
     if(!decoded) return res.status(400).json({err: 'Invalid Authentication.'})
 
     const user = await Users.findOne({_id: decoded.id})
+    const account = await Accounts.findById(user.account)
 
-    return {id: user._id, role: user.role, root: user.root};
+    return {id: user._id, role: account.phanQuyen};
 }
 
 

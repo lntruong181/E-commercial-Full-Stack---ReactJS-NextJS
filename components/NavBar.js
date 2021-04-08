@@ -29,8 +29,8 @@ function NavBar(){
 
 const loggedRouter = () => {
 return (
-        <li className={"nav-item pl-4 pl-md-0 ml-0 ml-md-4" + isActive('/#')}> <a className="nav-link dropdown-toggle"
-            data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+        <li className={"nav-item pl-4 pl-md-0 ml-0 ml-md-4" + isActive('/#')}> 
+        <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
             <img src={auth.user.avata} alt={auth.user.avata} style={{
                                 borderRadius: '50%', width: '30px', height: '30px',
                                 transform: 'translateY(-3px)', marginRight: '3px'
