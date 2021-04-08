@@ -12,6 +12,26 @@ export default async (req, res) => {
         case 'POST': 
             await createOrder(req, res)
             break;
+        case 'GET': 
+            await getOrders(req, res)
+            break;
+    }
+}
+const getOrders = async (req,res) => {
+    try {
+        const result = await auth(req,res)
+
+        let orders;
+        //user => get all oders by users
+        if(result.role !== 'admin'){
+            orders = await Orders.find({user: result.id}).populate("user", "-diaChi")
+        }else{
+            //get all order in db
+            orders = await Orders.find().populate("user", "-diaChi")
+        }
+        res.json({orders})
+    } catch (err) {
+        return res.status(500).json({err: err.message})
     }
 }
 
@@ -30,10 +50,18 @@ const createOrder = async (req, res) => {
             user: result.id, address: address._id, mobile: sdt, cart , total
 
         })
-        console.log(newOrders.cart)
+        //cập nhật số lượng sản phẩm còn trong kho và đã bán
+        cart.filter(item => {
+            return sold(item._id, item.quantity, item.inStock, item.sold)
+        })
+        newOrders.save()
         res.json({newOrders})
         
     } catch (err) {
         return res.status(500).json({err: err.message})
     }
+}
+
+const sold = async (id, quantity, OldInStock, oldSold) => {
+    await Products.findOneAndUpdate({_id: id}, {inStock: OldInStock - quantity, sold: quantity + oldSold})
 }

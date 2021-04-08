@@ -1,13 +1,8 @@
 
-import {getData} from '../utils/fetchData'
+import {getData, postData} from '../utils/fetchData'
 import { useState, useContext, useEffect } from 'react'
 import { DataContext } from '../store/GlobalState'
-import { postData} from '../utils/fetchData'
-import PaypalBtn from './paypalBtn'
-import Link from 'next/link'
-
-
-
+import {useRouter} from 'next/router'
 
 const Checkout = () => {
 
@@ -15,13 +10,14 @@ const Checkout = () => {
     const [data, setData] = useState(initialState)
     const {name, email, sdt, diachi, phuongxa, quanhuyen, tinhtp} = data
 
-    const [payment, setPayment] = useState(false)
-
     const [state, dispatch] = useContext(DataContext)
-    const {auth, cart} = state
+    const {auth, cart, orders} = state
 
     const [total, setTotal] = useState(0)
+    const [callback, setCallback] = useState(false)
+    const router = useRouter()
 
+    //get tổng tiền cho cart
     useEffect(()=>{
         const getTotal = () => {
             const res = cart.reduce((prev, item) => {
@@ -46,18 +42,41 @@ const Checkout = () => {
         setData({...data, [name]: value})
         dispatch({type: 'NOTIFY', payload: {} })
     }
-    const handleSumitOrder = (e) => {
+
+    //xử lí order
+    const handleSumitOrder = async(e) => {
         if(!name || !email || !sdt || !diachi || !phuongxa || !quanhuyen || !tinhtp)
         return dispatch({type: 'NOTIFY', payload: {error: 'Vui lòng nhập đủ thông tin. '}})
-        setPayment(true)
-        // postData('order', {name, email, sdt, diachi, phuongxa, quanhuyen, tinhtp, total, cart}, auth.token)
-        //     .then(res => {
-        //     if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
+        
+        let newCart = []
+        //get product trong cart: => số lượng trong giỏ <= tồn kho: add vào newCart
+        for(const item of cart){
+            const res = await getData(`product/${item._id}`)
+            if(res.product.inStock - item.quantity >=0){
+                newCart.push(item)
+            }
+        }
+        if(newCart.length < cart.length){
+            setCallback(!callback)
+            return dispatch({type:'NOTIFY', payload: {err: 'Sản phẩm đã hết hàng hoặc số lượng sản phẩm không đủ. '}})
+        }
 
-        //    console.log(res)
-        //     dispatch({ type: 'NOTIFY', payload: {success: res.msg} })
-         
-        // })
+        dispatch({ type: 'NOTIFY', payload: {loading: true} })
+
+        postData('order', {name, email, sdt, diachi, phuongxa, quanhuyen, tinhtp, total, cart}, auth.token)
+            .then(res => {
+                //Thất bại => err
+                if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
+                //Thành công => xóa cart
+                dispatch({ type: 'ADD_CART', payload: [] })
+                const newOrder = {
+                    ...res.newOrder,
+                    user: auth.user
+                }
+                dispatch({type: 'ADD_ORDERS', payload: [...orders, newOrder]})
+                dispatch({type: 'NOTIFY', payload: {success: res.msg}})
+                return router.push(`/`)
+        })
     }
 
     if(!auth.user) return null
@@ -377,27 +396,11 @@ const Checkout = () => {
 
                         </div>
                         <div className="step-footer">
-                                {
-                                    payment
-                                    ? <PaypalBtn
-                                        total={total}
-                                        name={name}
-                                        email={email}
-                                        sdt={sdt}
-                                        diachi={diachi}
-                                        phuongxa={phuongxa}
-                                        quanhuyen={quanhuyen}
-                                        tinhtp={tinhtp}
-                                        state={state}
-                                        dispatch={dispatch}
-
-
-                                    />
-                                    :  <button type="submit" className="step-footer-continue-btn btn" onClick={handleSumitOrder}>
+                              <button type="submit" className="step-footer-continue-btn btn" onClick={handleSumitOrder}>
                                             <span className="btn-content">Hoàn tất đơn hàng</span>
                                             <i className="btn-spinner icon icon-button-spinner"></i>
                                         </button>
-                                }                            
+                                                      
                             <a className="step-footer-previous-link" href="/cart">
                                 <svg className="previous-link-icon icon-chevron icon" xmlns="http://www.w3.org/2000/svg" width="6.7" height="11.3" viewBox="0 0 6.7 11.3"><path d="M6.7 1.1l-1-1.1-4.6 4.6-1.1 1.1 1.1 1 4.6 4.6 1-1-4.6-4.6z"></path></svg> Giỏ
                                 hàng
