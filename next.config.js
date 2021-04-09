@@ -7,7 +7,8 @@ module.exports = {
         "CLOUD_UPDATE_PRESET": "aothun_store",
         "CLOUD_NAME": "nguyenhungdev",
         "CLOUD_API": "https://api.cloudinary.com/v1_1/nguyenhungdev/image/upload",
-        "PAYPAL_CLIENT_ID": "ARZnwrB3wNBnmo6ZcY2YAtBqlRCmAEG-SHe4sOZ87LAjSO8WSmztANgdAC0MO0k7LuNP0hUbxaSJsJcU"
+        "PAYPAL_CLIENT_ID": 'AcCLjrr9VUsRtqNUmZYJeRnxc22AsuUrVK23NTrYne7kE-t-STWwuW31lzZTW1hvqmN9B7FIwj2IBnub'
+        
         
         
     }

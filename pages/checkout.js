@@ -14,7 +14,7 @@ const Checkout = () => {
     const {auth, cart, orders} = state
 
     const [total, setTotal] = useState(0)
-    const [callback, setCallback] = useState(false)
+    // const [callback, setCallback] = useState(false)
     const router = useRouter()
 
     //get tổng tiền cho cart
@@ -57,8 +57,8 @@ const Checkout = () => {
             }
         }
         if(newCart.length < cart.length){
-            setCallback(!callback)
-            return dispatch({type:'NOTIFY', payload: {err: 'Sản phẩm đã hết hàng hoặc số lượng sản phẩm không đủ. '}})
+            // setCallback(!callback)
+            return dispatch({type:'NOTIFY', payload: {error: 'Sản phẩm đã hết hàng hoặc số lượng sản phẩm không đủ. '} })
         }
 
         dispatch({ type: 'NOTIFY', payload: {loading: true} })
@@ -69,13 +69,13 @@ const Checkout = () => {
                 if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
                 //Thành công => xóa cart
                 dispatch({ type: 'ADD_CART', payload: [] })
-                const newOrder = {
-                    ...res.newOrder,
+                const newOrders = {
+                    ...res.newOrders,
                     user: auth.user
                 }
-                dispatch({type: 'ADD_ORDERS', payload: [...orders, newOrder]})
+                dispatch({type: 'ADD_ORDERS', payload: [...orders, newOrders]})
                 dispatch({type: 'NOTIFY', payload: {success: res.msg}})
-                return router.push(`/`)
+                return router.push(`/order/${res.newOrders._id}`)
         })
     }
 

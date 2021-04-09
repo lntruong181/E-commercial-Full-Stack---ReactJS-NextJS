@@ -55,7 +55,10 @@ const createOrder = async (req, res) => {
             return sold(item._id, item.quantity, item.inStock, item.sold)
         })
         newOrders.save()
-        res.json({newOrders})
+        res.json({
+            msg: 'Order thành công! Chúng tôi sẻ liên hệ với bạn để xác nhận đơn hàng.',
+            newOrders
+        })
         
     } catch (err) {
         return res.status(500).json({err: err.message})

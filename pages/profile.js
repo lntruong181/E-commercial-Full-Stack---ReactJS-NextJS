@@ -21,7 +21,7 @@ const Profile = () => {
 
 
     const [state, dispatch] = useContext(DataContext)
-    const { auth , notify} = state
+    const { auth , notify, orders} = state
 
     const [dataUser, setDataUser] = useState({})
     const [account, setAccount] = useState({})
@@ -132,11 +132,7 @@ const Profile = () => {
                     </div>
                     
                     <h2 style={{textAlign:'center'}}>{name}</h2>
-                           
-
-                           
-                            
-                            
+                  
                 </div>
 
                 <div className="col-md-8">              
@@ -150,27 +146,55 @@ const Profile = () => {
                     </nav>
                     <div className="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                         <div className="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                        <h3 className="text-uppercase">Orders</h3>
+                        <h2 style={{textAlign:'cen'}} className="text-uppercase">Orders</h2>
+                        <div className="my-3 table-responsive">
+                        <table className="table-bordered table-hover w-100 text-uppercase"
+                        style={{minWidth: '600px', cursor: 'pointer'}}>
+                            <thead className="bg-light font-weight-bold">
+                                <tr>
+                                    <td className="p-2">id</td>
+                                    <td className="p-2">date</td>
+                                    <td className="p-2">total</td>
+                                    <td className="p-2">delivered</td>
+                                    <td className="p-2">paid</td>
+                                </tr>
+                            </thead>
 
-                            <div className="my-3 table-responsive">
-                                <table className="table-bordered table-hover w-100 text-uppercase"
-                                style={{minWidth: '600px', cursor: 'pointer'}}>
-                                    <thead className="bg-light font-weight-bold">
-                                        <tr>
-                                            <td className="p-2">id</td>
-                                            <td className="p-2">date</td>
-                                            <td className="p-2">total</td>
-                                            <td className="p-2">delivered</td>
-                                            <td className="p-2">paid</td>
-                                        </tr>
-                                    </thead>
+                            <tbody>
+                                {
+                                    orders.map(order => (
+                                        <tr key={order._id}>
+                                            <td className="p-2">
+                                                <Link href={`/order/${order._id}`}>
+                                                    <a>{order._id}</a>
+                                                </Link>
+                                                
+                                            </td>
+                                            <td className="p-2">
+                                                {new Date(order.createdAt).toLocaleDateString()}
+                                            </td>
+                                            <td className="p-2">${order.total}</td>
+                                            <td className="p-2">
+                                                {
+                                                    order.delivered
+                                                    ? <i className="fas fa-check text-success"></i>
+                                                    : <i className="fas fa-times text-danger"></i>
+                                                }
+                                            </td>
+                                            <td className="p-2">
+                                                {
+                                                    order.paid
+                                                    ? <i className="fas fa-check text-success"></i>
+                                                    : <i className="fas fa-times text-danger"></i>
+                                                }
+                                            </td>
+                                        </tr> 
+                                    ))
+                                }
+                            </tbody>
 
-                                    <tbody>
-                                    
-                                    </tbody>
-
-                                </table>
-                            </div>
+                        </table>
+                    </div>
                         </div>
                         <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
                             <div style={{marginLeft:'20%', marginRight:'20%'}}>
