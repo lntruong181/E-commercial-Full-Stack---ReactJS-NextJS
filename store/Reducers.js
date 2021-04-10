@@ -18,12 +18,6 @@ const reducers = (state, action) => {
                 cart: action.payload
             };
         case ACTIONS.ADD_MODAL:
-<<<<<<< HEAD
-                return {
-                    ...state,
-                    modal: action.payload
-                };
-=======
             return {
                 ...state,
                 modal: action.payload
@@ -33,7 +27,11 @@ const reducers = (state, action) => {
                 ...state,
                 orders: action.payload
             };
->>>>>>> 56d01981be8e90878dc0a26a149f50334312155f
+        case ACTIONS.ADD_USERS:
+            return {
+                ...state,
+                users: action.payload
+            };
         default:
             return state;
     }

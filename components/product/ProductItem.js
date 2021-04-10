@@ -6,10 +6,7 @@ import {Notified} from '../../store/Actions'
 const ProductItem = ({product}) => {
 
 
-    const handleSubmit = ()=>{
-        dispatch(Notified())
-        dispatch(addToCart(product, cart))
-    }
+  
 
     const [state, dispatch] = useContext(DataContext)
     const {cart} = state

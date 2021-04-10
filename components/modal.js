@@ -1,6 +1,6 @@
 import {useContext} from 'react'
 import {DataContext} from '../store/GlobalState'
-import {deleteItem} from '../store/Actions'
+import {deleteItem, deleteUser} from '../store/Actions'
 
 
 const Modal = () => {
@@ -11,7 +11,8 @@ const Modal = () => {
     const handleSubmit = () => {
         dispatch(deleteItem(modal.data, modal.id, 'ADD_CART'))
         dispatch({type: 'ADD_MODAL', payload: {} })
-
+        // dispatch(deleteUser(modal.data, modal.id, 'ADD_USERS'))
+        // dispatch({type: 'ADD_USERS', payload: {} })
     }
 
     return (

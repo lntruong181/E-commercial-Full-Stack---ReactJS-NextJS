@@ -6,10 +6,6 @@ import CartItem from '../components/CartItem'
 import {getData} from '../utils/fetchData'
 
 
-import Head from 'next/head'
-import {useContext, useEffect, useState} from 'react'
-import {DataContext} from '../store/GlobalState'
-import CartItem from '../components/CartItem'
 
 const Cart = () => {
     const [state, dispatch] = useContext(DataContext)

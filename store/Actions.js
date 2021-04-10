@@ -4,6 +4,7 @@ export const ACTIONS = {
     ADD_CART: 'ADD_CART',
     ADD_MODAL: 'ADD_MODAL',
     ADD_ORDERS: 'ADD_ORDERS',
+    ADD_USERS: 'ADD_USERS'
 }
 
 export const addToCart = (product, cart) => {
@@ -46,5 +47,12 @@ export const Notified = () =>{
 }
 export const updateItem = (data, id, post, type) => {
     const newData = data.map(item => (item._id === id ? post : item))
+    return ({ type, payload: newData})
+}
+
+// Update user manager
+
+export const deleteUser = (data, id, type) => {
+    const newData = data.filter(item => item._id !== id)
     return ({ type, payload: newData})
 }
