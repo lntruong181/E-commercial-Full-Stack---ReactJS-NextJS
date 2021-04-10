@@ -17,6 +17,7 @@ export default async (req, res) => {
 
         const user = await Users.findById(result.id)
         const account = await Accounts.findById(user.account)
+        const address = await Addresss.findById(user.diaChi)
         if(!user) return res.status(400).json({error: 'User does not exist.'})
 
         const access_token = createAccessToken({id: user._id})
@@ -26,7 +27,9 @@ export default async (req, res) => {
                 name: user.ten,
                 email: user.email,
                 role: account.phanQuyen,
-                avata: user.anhDaiDien
+                avata: user.anhDaiDien,
+                phone: user.sdt,
+                address: address
             }
         })
 

@@ -6,9 +6,13 @@ export const DataContext = createContext()
 
 export const DataProvider = ({children}) => {
 
+<<<<<<< HEAD
     const initialState =  { notify: {}, auth: {}, cart: [], modal:{}}
+=======
+    const initialState =  { notify: {}, auth: {}, cart: [], modal: {},orders: []}
+>>>>>>> 56d01981be8e90878dc0a26a149f50334312155f
     const [state, dispatch] = useReducer(reducers, initialState)
-    const {cart} = state
+    const {cart, auth} = state
 
     useEffect(() => {
         const firstLogin = localStorage.getItem('firstLogin');
@@ -35,6 +39,15 @@ export const DataProvider = ({children}) => {
     useEffect(() => {
         localStorage.setItem('__cart_by_dev_hung',JSON.stringify(cart))
     },[cart])
+
+    useEffect(() => {
+        if(auth.token){
+            getData('order' ,auth.token).then(res => {
+                if(res.err) return dispatch({type: 'NOTIFY' , payload: {err: res.err}})
+                dispatch({type: 'ADD_ORDERS' , payload: res.orders})
+            })
+        }
+    },[auth.token])
 
     return (
         <DataContext.Provider value={[state,dispatch]}>

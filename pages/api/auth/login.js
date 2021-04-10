@@ -25,6 +25,7 @@ const login = async (req, res) => {
         const user = await Users.findOne({ email })
         if(!user) return res.status(400).json({err: 'This user does not exists.'})
         const account = await Accounts.findById(user.account)
+        const address = await Addresss.findById(user.diaChi)
         const isMatch = await bcrypt.compare(password, account.password);
         if(!isMatch) return res.status(400).json({err: 'Incorrect password.'})
 
@@ -38,7 +39,9 @@ const login = async (req, res) => {
                 name: user.ten,
                 email: user.email,
                 role: account.phanQuyen,
-                avata: user.anhDaiDien
+                avata: user.anhDaiDien,
+                phone: user.sdt,
+                address: address
                 
             }
         })
