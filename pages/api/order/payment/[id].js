@@ -1,6 +1,6 @@
-import connectDB from '../../../utils/connectDB'
-import Orders from '../../../models/orderModel'
-import auth from '../../../middleware/auth'
+import connectDB from '../../../../utils/connectDB'
+import Orders from '../../../../models/orderModel'
+import auth from '../../../../middleware/auth'
 
 connectDB()
 

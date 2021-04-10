@@ -146,7 +146,7 @@ const Profile = () => {
                     </nav>
                     <div className="tab-content py-3 px-3 px-sm-0" id="nav-tabContent">
                         <div className="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-                        <h2 style={{textAlign:'cen'}} className="text-uppercase">Orders</h2>
+                        <h2 style={{textAlign:'center'}} className="text-uppercase">Orders</h2>
                         <div className="my-3 table-responsive">
                         <table className="table-bordered table-hover w-100 text-uppercase"
                         style={{minWidth: '600px', cursor: 'pointer'}}>
