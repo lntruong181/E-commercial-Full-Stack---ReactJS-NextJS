@@ -2,11 +2,24 @@ import Link from 'next/link'
 import PaypalBtn from './paypalBtn'
 import {useContext, useState, useEffect} from 'react'
 import {DataContext} from '../store/GlobalState'
+import { patchData } from '../utils/fetchData'
+import { updateItem } from '../store/Actions'
 
-const OrderDetail = ({orderDetail}) => {
-    const [state, dispatch] = useContext(DataContext)
+const OrderDetail = ({orderDetail, state, dispatch}) => {
     const {auth, orders} = state
+    const handleDelivered = (order) => {
+        dispatch({type: 'NOTIFY', payload: {loading: true}})
+        
+        patchData(`order/delivered/${order._id}`,null, auth.token).then(res=>{
+            if(res.err) return  dispatch({type: 'NOTIFY', payload: {error: res.err}})
+            
+            const { paid, dateOfPayment, method, delivered } = res.result
 
+            dispatch(updateItem(orders, order._id, {...order, paid, dateOfPayment, method, delivered}, 'ADD_ORDERS'))
+            return  dispatch({type: 'NOTIFY', payload: {success: res.msg}})
+        })
+    }
+    if(!auth.user) return null
     return (
         <>
             {

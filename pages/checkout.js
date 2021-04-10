@@ -73,7 +73,7 @@ const Checkout = () => {
                     ...res.newOrders,
                     user: auth.user
                 }
-                dispatch({type: 'ADD_ORDERS', payload: [...orders, newOrders]})
+                dispatch({type: 'ADD_ORDERS', payload: [...orders, newOrders] })
                 dispatch({type: 'NOTIFY', payload: {success: res.msg}})
                 return router.push(`/order/${res.newOrders._id}`)
         })

@@ -26,9 +26,9 @@ const paypalBtn = ({order}) => {
               dispatch({ type: 'NOTIFY', payload: {loading: true} })
               // This function captures the funds from the transaction.
               return actions.order.capture().then(function(details) {
-                
+                console.log(details)
                 //path data to api
-                patchData(`order/${order._id}`, {paymentId: details.payer.payer_id}, auth.token)
+                patchData(`order/payment/${order._id}`, {paymentId: details.payer.payer_id}, auth.token)
                     .then(res => {
                         //Thất bại => err
                         if(res.err) return dispatch({ type: 'NOTIFY', payload: {error: res.err} })
